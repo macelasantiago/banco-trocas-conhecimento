@@ -8,20 +8,20 @@ datasource db {
 }
 
 model Pessoa {
-  id            Int             @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   nome          String
-  email         String          @unique
-  telefone      String
-  descricao     String?
+  email         String         @unique
   conhecimentos Conhecimento[]
+  createdAt     DateTime       @default(now())
 }
 
 model Conhecimento {
-  id         Int     @id @default(autoincrement())
-  titulo     String
-  descricao  String
-  categoria  String
-  nivel      String
-  pessoa     Pessoa  @relation(fields: [pessoaId], references: [id])
-  pessoaId   Int
+  id        Int      @id @default(autoincrement())
+  titulo    String
+  descricao String
+  categoria String
+  nivel     String
+  pessoa    Pessoa   @relation(fields: [pessoaId], references: [id])
+  pessoaId  Int
+  createdAt DateTime @default(now())
 }
