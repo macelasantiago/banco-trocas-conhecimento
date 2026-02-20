@@ -1,11 +1,11 @@
-const express = require('express');
-const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
+import { Router } from "express";
+import { PrismaClient } from "@prisma/client";
 
+const router = Router();
 const prisma = new PrismaClient();
 
 // POST /pessoas
-router.post('/', async (req, res) => {
+router.post("/pessoas", async (req, res) => {
   const { nome, email, telefone, descricao } = req.body;
 
   try {
@@ -20,13 +20,13 @@ router.post('/', async (req, res) => {
 });
 
 // GET /pessoas
-router.get('/', async (req, res) => {
+router.get("/pessoas", async (req, res) => {
   const pessoas = await prisma.pessoa.findMany();
   res.json(pessoas);
 });
 
 // GET /pessoas/:id
-router.get('/:id', async (req, res) => {
+router.get("/pessoas/:id", async (req, res) => {
   const { id } = req.params;
 
   const pessoa = await prisma.pessoa.findUnique({
@@ -41,7 +41,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // PUT /pessoas/:id
-router.put('/:id', async (req, res) => {
+router.put("/pessoas/:id", async (req, res) => {
   const { id } = req.params;
   const { nome, email, telefone, descricao } = req.body;
 
@@ -58,7 +58,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /pessoas/:id
-router.delete('/:id', async (req, res) => {
+router.delete("/pessoas/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -72,4 +72,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
