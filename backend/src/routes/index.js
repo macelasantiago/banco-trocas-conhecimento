@@ -1,5 +1,8 @@
 import { Router } from "express";
+import pessoaRoutes from "./pessoa.routes.js";
 
-const router = Router();
+const routes = Router();
 
-export default router;
+routes.use(pessoaRoutes);
+
+export default routes;
