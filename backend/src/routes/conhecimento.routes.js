@@ -29,24 +29,52 @@ router.post("/conhecimentos", async (req, res) => {
     });
 
     res.json(conhecimento);
-  } catch (error) {
-    res.status(500).json({ erro: error.message });
+  } catch (erro) {
+    res.status(500).json({ erro: erro.message });
   }
 });
 
 // GET /conhecimentos
 router.get("/conhecimentos", async (req, res) => {
+  try {
+    //Le parametros filtros enviados URL
+    const { categoria, nivel} = req.query;
+  
+    //Filtro dinamico
+    const where = {};
+
+    if (categoria) {
+      where.categoria = {
+        equals: categoria,
+        mode:"insensitive" // ignora Letras M ou m
+      };
+    }
+
+    if (nivel){
+      where.nivel = {
+        equals: nivel,
+        mode: "insensitive"
+      };
+    }
+
+  
   const conhecimentos = await prisma.conhecimento.findMany({
+    where,
     include: {
       pessoa: true
     }
   });
 
   res.json(conhecimentos);
+  } catch (erro) {
+    res.status(500) .json({erro: erro.message})
+    }
 });
 
 // GET /conhecimentos/:id
 router.get("/conhecimentos/:id", async (req, res) => {
+  
+  try {
   const id = Number(req.params.id);
 
   const conhecimento = await prisma.conhecimento.findUnique({
@@ -59,6 +87,9 @@ router.get("/conhecimentos/:id", async (req, res) => {
   }
 
   res.json(conhecimento);
+} catch (erro) {
+  res.status(500).json({ erro: erro.message});
+}
 });
 
 // PUT /conhecimentos/:id
