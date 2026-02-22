@@ -11,6 +11,9 @@ model Pessoa {
   id            Int            @id @default(autoincrement())
   nome          String
   email         String         @unique
+  telefone      String?  
+  descricao     String?
+  senha         String?         
   conhecimentos Conhecimento[]
   createdAt     DateTime       @default(now())
 }
@@ -24,4 +27,5 @@ model Conhecimento {
   pessoa    Pessoa   @relation(fields: [pessoaId], references: [id])
   pessoaId  Int
   createdAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
