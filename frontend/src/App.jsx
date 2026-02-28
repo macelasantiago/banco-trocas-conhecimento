@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
 import Pessoas from "./pages/Pessoas";
 import Conhecimentos from "./pages/Conhecimentos";
-import Landing from "./pages/Landing";
+import PaginaInicial from "./pages/PaginaInicial";
+import SobreNos from "./pages/SobreNos";
 import MainLayout from "./layout/MainLayout";
 
 function App() {
@@ -10,10 +10,10 @@ function App() {
     <BrowserRouter>
       <MainLayout>
         <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/pessoas" element={<Pessoas />} />
+          <Route path="/"            element={<PaginaInicial />} />
+          <Route path="/pessoas"     element={<Pessoas />} />
           <Route path="/conhecimentos" element={<Conhecimentos />} />
+          <Route path="/sobre"       element={<SobreNos />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
