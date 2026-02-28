@@ -1,0 +1,178 @@
+/* Estilos para o componente Footer */
+
+.footer-root {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 24px;
+}
+
+/* Topo: brand + colunas de links */
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+}
+
+/* Brand */
+
+.footer-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.footer-brand-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-brand-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.footer-brand-name span {
+  color: #a78bfa;
+}
+
+.footer-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  max-width: 280px;
+}
+
+/* Colunas de links */
+
+.footer-col h4 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(200, 195, 255, 0.35);
+  margin-bottom: 14px;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.footer-col a:hover {
+  color: #a78bfa;
+  transform: translateX(4px);
+}
+
+/* Rodapé inferior */
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.footer-badge {
+  font-size: 0.73rem;
+  color: var(--text-faint);
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+/* Responsividade */
+
+@media (max-width: 640px) {
+  .footer-inner {
+    padding: 28px 20px 20px;
+  }
+
+  /* Brand em linha compacta no topo */
+  .footer-top {
+    /* brand ocupa linha completa, colunas lado a lado abaixo */
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 20px 24px;
+  }
+
+  /* Brand ocupa linha completa e empilha verticalmente */
+  
+  .footer-top > div:first-child {
+    grid-column: 1 / -1;
+    display: block;
+  }
+
+  .footer-brand-logo {
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .footer-brand-name {
+    white-space: nowrap;
+  }
+
+  .footer-top > div:first-child .footer-desc {
+    font-size: 0.83rem;
+    max-width: none;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* As duas colunas de links ficam lado a lado */
+
+  .footer-col h4 {
+    margin-bottom: 10px;
+  }
+
+  .footer-col a {
+    font-size: 0.84rem;
+    margin-bottom: 8px;
+  }
+
+  /* Rodapé inferior: copyright + badge na mesma linha */
+
+  .footer-bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+  }
+
+  .footer-copy {
+    font-size: 0.75rem;
+  }
+}
