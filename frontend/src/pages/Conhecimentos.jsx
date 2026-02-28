@@ -1,4 +1,4 @@
-function Home() {
+function Conhecimento() {
   return <h1>Página Conhecimento</h1>;
 }
 
