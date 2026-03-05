@@ -9,10 +9,12 @@ function useTypewriter(lines, speed = 45, pauseBetween = 300) {
   // Lógica de digitação: escreve a primeira linha, depois a segunda, com pausas entre elas
   useEffect(() => {
     let timeoutId;
+    let cancelled = false; // flag para evitar setState após desmontagem
     let charIndex = 0;
 
     // Escreve a primeira linha caractere por caractere
     const typeLine1 = () => {
+      if (cancelled) return; // Verifica se o componente foi desmontado antes de tentar atualizar o estado
       if (charIndex <= lines[0].length) {
         setLine1(lines[0].slice(0, charIndex));
         charIndex++; // Incrementa o índice para revelar o próximo caractere
@@ -27,6 +29,7 @@ function useTypewriter(lines, speed = 45, pauseBetween = 300) {
     // Função para iniciar a digitação da segunda linha  
     const typeLine2Start = () => {
       const type = () => {
+        if (cancelled) return; // Verifica se o componente foi desmontado antes de tentar atualizar o estado
         // Continua revelando a segunda linha caractere por caractere
         if (charIndex2 <= lines[1].length) {
           setLine2(lines[1].slice(0, charIndex2));
@@ -40,7 +43,10 @@ function useTypewriter(lines, speed = 45, pauseBetween = 300) {
     };
 
     typeLine1();
-    return () => clearTimeout(timeoutId);
+    return () => {
+      cancelled = true; // limpa flag no cleanup
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   return { line1, line2, done };
