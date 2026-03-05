@@ -1,0 +1,326 @@
+/* === Página de Cadastro === */
+.cadastro-page {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cadastro-page .landing-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 92, 246, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cadastro-page .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+}
+.cadastro-page .orb-1 {
+  width: 420px; height: 420px;
+  top: -100px; left: -100px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.14) 0%, transparent 70%);
+}
+.cadastro-page .orb-2 {
+  width: 320px; height: 320px;
+  bottom: -80px; right: -60px;
+  background: radial-gradient(circle, rgba(109, 40, 217, 0.11) 0%, transparent 70%);
+}
+
+/* Card central */
+.cadastro-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  animation: fadeSlideUp 0.55s ease both;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cadastro-card__stripe {
+  height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa, #6d28d9);
+}
+.cadastro-card__body {
+  padding: 36px 32px 40px;
+}
+
+/* Badge */
+.cadastro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+  color: #a78bfa;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* Título e subtítulo */
+.cadastro-title {
+  font-size: clamp(1.5rem, 3.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.cadastro-title span {
+  background: linear-gradient(135deg, #c4b5fd, #a78bfa, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.cadastro-subtitle {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+/* Mensagem de erro inline */
+.cadastro-erro {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  font-size: 0.84rem;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* Campos */
+.cadastro-field { margin-bottom: 18px; }
+
+.cadastro-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.cadastro-label svg { color: #8b5cf6; opacity: 0.8; }
+
+.cadastro-opcional {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: rgba(139, 92, 246, 0.55);
+  margin-left: 2px;
+}
+
+.cadastro-input {
+  width: 100%;
+  padding: 11px 15px;
+  background: rgba(139, 92, 246, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: inherit;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  box-sizing: border-box;
+}
+.cadastro-input::placeholder { color: var(--text-muted); opacity: 0.55; }
+.cadastro-input:focus {
+  border-color: rgba(139, 92, 246, 0.5);
+  background: rgba(139, 92, 246, 0.08);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+.cadastro-input:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.cadastro-textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  line-height: 1.55;
+}
+
+/* Botão submit */
+.cadastro-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 24px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
+  letter-spacing: 0.01em;
+}
+.cadastro-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(139, 92, 246, 0.45);
+}
+.cadastro-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+/* Spinner */
+.cadastro-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* === Perfil pós-cadastro === */
+.perfil-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  animation: fadeSlideUp 0.55s ease both;
+  text-align: center;
+}
+.perfil-card__stripe {
+  height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa, #6d28d9);
+}
+.perfil-card__body { padding: 40px 32px 44px; }
+
+.perfil-avatar {
+  width: 72px; height: 72px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 auto 20px;
+  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
+}
+
+.perfil-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #a78bfa;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.perfil-name {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+
+.perfil-email { color: var(--text-muted); font-size: 0.88rem; margin-bottom: 8px; }
+
+.perfil-telefone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+.perfil-telefone svg { color: #8b5cf6; opacity: 0.75; }
+
+.perfil-descricao {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-style: italic;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: rgba(139, 92, 246, 0.05);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.perfil-divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+
+.perfil-highlight {
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.07);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  font-size: 0.83rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.perfil-highlight strong { color: #a78bfa; }
+
+.perfil-novo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 11px 22px;
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  color: #a78bfa;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.perfil-novo-btn:hover {
+  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 520px) {
+  .cadastro-card__body,
+  .perfil-card__body { padding: 28px 20px 32px; }
+}
