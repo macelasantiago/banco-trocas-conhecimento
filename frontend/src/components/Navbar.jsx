@@ -1,8 +1,9 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { limparSessao, getUsuarioSalvo } from "../utils/auth";
 import "../styles/navbar.css";
 
-// Ícones SVG para o Navbar
+// Ícones SVG personalizados para o navbar, criados por mim para manter uma identidade visual consistente.
 const IconBrain = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
@@ -13,14 +14,6 @@ const IconHome = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
     <polyline points="9 21 9 12 15 12 15 21"/>
-  </svg>
-);
-const IconUsers = () => (
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-    <circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
   </svg>
 );
 const IconBook = () => (
@@ -50,52 +43,89 @@ const IconX = () => (
     <line x1="6" y1="6" x2="18" y2="18"/>
   </svg>
 );
+const IconLogout = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+    <polyline points="16 17 21 12 16 7"/>
+    <line x1="21" y1="12" x2="9" y2="12"/>
+  </svg>
+);
+const IconLogin = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+    <polyline points="10 17 15 12 10 7"/>
+    <line x1="15" y1="12" x2="3" y2="12"/>
+  </svg>
+);
 
-// Links de navegação do Navbar, com ícones e rótulos
+/**
+ * Ícone personalizado de sessão ativa — pessoa com crachá de verificação.
+ */
+const IconUserBadge = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="7" r="3.5"/>
+    <path d="M5.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"/>
+    <circle cx="19" cy="5" r="3" fill="rgba(139,92,246,0.2)" stroke="#a78bfa" strokeWidth="1.5"/>
+    <path d="M17.5 5l1 1 1.8-1.8" stroke="#a78bfa" strokeWidth="1.4"/>
+  </svg>
+);
+
 const navLinks = [
   { to: "/",              label: "Início",        icon: <IconHome /> },
-  { to: "/pessoas",       label: "Pessoas",       icon: <IconUsers /> },
   { to: "/conhecimentos", label: "Conhecimentos", icon: <IconBook /> },
   { to: "/sobre",         label: "Sobre Nós",     icon: <IconTeam /> },
 ];
 
-// Função principal do Navbar, que gerencia o estado de rolagem e menu móvel, e renderiza os links de navegação com destaque para a rota ativa.
 function Navbar() {
-  const location = useLocation();
+  const location   = useLocation();
+  const navigate   = useNavigate();
   const [scrolled,   setScrolled]   = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [usuario,    setUsuario]    = useState(getUsuarioSalvo);
 
-  // Efeito para detectar rolagem e adicionar classe "scrolled" ao navbar
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Fecha o menu móvel ao navegar para outra rota
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
-  // Impede rolagem do body quando o menu móvel está aberto
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  // Função para determinar se um link de navegação deve ser marcado como ativo com base na rota atual
+  useEffect(() => {
+    const sync = () => setUsuario(getUsuarioSalvo());
+    window.addEventListener("authChange", sync);
+    return () => window.removeEventListener("authChange", sync);
+  }, []);
+
+  function handleLogout() {
+    limparSessao();
+    setUsuario(null);
+    setMobileOpen(false);
+    navigate("/");
+  }
+
   const isActive = (path) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
+  const iniciais = usuario
+    ? usuario.nome.split(" ").slice(0, 2).map((p) => p[0].toUpperCase()).join("")
+    : "";
+
   return (
     <>
-    {/* Navbar principal, com classe "scrolled" aplicada quando o usuário rola a página */}
       <nav className={`nav-root${scrolled ? " scrolled" : ""}`}>
         <div className="nav-inner">
+
           <Link to="/" className="nav-logo">
             <div className="nav-logo-icon"><IconBrain /></div>
             <span className="nav-logo-text">Banco de <span>Trocas</span></span>
           </Link>
 
-          {/* Links de navegação para desktop, que são ocultados em telas menores e substituídos pelo menu móvel */}
           <ul className="nav-links">
             {navLinks.map(({ to, label, icon }) => (
               <li key={to}>
@@ -106,9 +136,33 @@ function Navbar() {
             ))}
           </ul>
 
-          <Link to="/pessoas" className="nav-cta">Cadastrar-se →</Link>
+          {/* ── Autenticação ── */}
+          {usuario ? (
+            /* Logado: avatar + nome + sair */
+            <div className="nav-user">
+              <div className="nav-user-avatar-wrap">
+                <div className="nav-user-avatar">{iniciais}</div>
+                <div className="nav-user-badge-icon" title="Sessão ativa">
+                  <IconUserBadge />
+                </div>
+              </div>
+              <span className="nav-user-name">{usuario.nome.split(" ")[0]}</span>
+              <button className="nav-user-logout" onClick={handleLogout} title="Sair da conta">
+                <IconLogout /> Sair
+              </button>
+            </div>
+          ) : (
+            /* Deslogado: Entrar + Cadastrar-se */
+            <div className="nav-auth-btns">
+              <Link to="/login" className="nav-login">
+                <IconLogin /> Entrar
+              </Link>
+              <Link to="/pessoas" className="nav-cta">
+                Cadastrar-se →
+              </Link>
+            </div>
+          )}
 
-          {/* Botão para abrir/fechar o menu móvel, que alterna entre os ícones de menu e fechar dependendo do estado "mobileOpen" */}
           <button
             className="nav-mobile-btn"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -119,7 +173,6 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Menu móvel, que é exibido quando o estado "mobileOpen" é verdadeiro. Inclui uma sobreposição para fechar o menu ao clicar fora dele. */}
       {mobileOpen && (
         <>
           <div className="nav-overlay" onClick={() => setMobileOpen(false)} />
@@ -130,9 +183,27 @@ function Navbar() {
               </Link>
             ))}
             <div className="nav-mobile-divider" />
-            <Link to="/pessoas" className="nav-mobile-cta">
-              Cadastrar-se →
-            </Link>
+            {usuario ? (
+              <>
+                <div className="nav-mobile-user-info">
+                  <IconUserBadge />
+                  <span>{usuario.nome.split(" ")[0]}</span>
+                  <span className="nav-mobile-user-tag">logado</span>
+                </div>
+                <button className="nav-mobile-logout" onClick={handleLogout}>
+                  <IconLogout /> Sair da conta
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="nav-mobile-login">
+                  <IconLogin /> Entrar
+                </Link>
+                <Link to="/pessoas" className="nav-mobile-cta">
+                  Cadastrar-se →
+                </Link>
+              </>
+            )}
           </div>
         </>
       )}
