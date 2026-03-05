@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Pessoas from "./pages/Pessoas";
 import Conhecimentos from "./pages/Conhecimentos";
+import Login from "./pages/Login";
 import PaginaInicial from "./pages/PaginaInicial";
 import SobreNos from "./pages/SobreNos";
 import MainLayout from "./layout/MainLayout";
@@ -10,10 +11,11 @@ function App() {
     <BrowserRouter>
       <MainLayout>
         <Routes>
-          <Route path="/"            element={<PaginaInicial />} />
-          <Route path="/pessoas"     element={<Pessoas />} />
+          <Route path="/"              element={<PaginaInicial />} />
+          <Route path="/pessoas"       element={<Pessoas />} />
+          <Route path="/login"         element={<Login />} />
           <Route path="/conhecimentos" element={<Conhecimentos />} />
-          <Route path="/sobre"       element={<SobreNos />} />
+          <Route path="/sobre"         element={<SobreNos />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
