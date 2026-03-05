@@ -54,11 +54,11 @@ function PaginaInicial() {
         <h1 className="hero-title">
           <span>
             {line1}
-            {!line2 && !done && <span className="hero-title-cursor" />}
+            {!line2 && !done && <span key="cursor1" className="hero-title-cursor" />} {/* ← CORREÇÃO: key adicionada */}
           </span>
           <span className="hero-title-line2">
             {line2}
-            {line2.length > 0 && !done && <span className="hero-title-cursor" />}
+            {line2.length > 0 && !done && <span key="cursor2" className="hero-title-cursor" />} {/* ← CORREÇÃO: key adicionada */}
           </span>
         </h1>
 
