@@ -72,6 +72,7 @@ const IconUserBadge = () => (
 
 const navLinks = [
   { to: "/",              label: "Início",        icon: <IconHome /> },
+  { to: "/pessoas",       label: "Pessoas",       icon: <IconTeam /> },
   { to: "/conhecimentos", label: "Conhecimentos", icon: <IconBook /> },
   { to: "/sobre",         label: "Sobre Nós",     icon: <IconTeam /> },
 ];
