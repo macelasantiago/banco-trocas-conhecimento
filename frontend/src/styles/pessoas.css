@@ -324,3 +324,20 @@
   .cadastro-card__body,
   .perfil-card__body { padding: 28px 20px 32px; }
 }
+/* ── Link para login na página de cadastro ── */
+.cadastro-login-hint {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+.cadastro-login-hint a {
+  color: #a78bfa;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.cadastro-login-hint a:hover {
+  color: #c4b5fd;
+}
