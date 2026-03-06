@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { salvarSessao, limparSessao } from "../utils/auth";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { salvarSessao, limparSessao, getUsuarioSalvo } from "../utils/auth";
 import "../styles/pessoas.css";
 
 // Ícones inline SVG personalizados para a página de cadastro de pessoas, criados por mim para manter uma identidade visual consistente.
@@ -49,31 +50,69 @@ const IcSpark = () => (
     <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
   </svg>
 );
+const IcArrow = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+    stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+  </svg>
+);
 
-// Função do componente Pessoas que gerencia o estado do perfil do usuário, o processo de cadastro e exibe o formulário ou o perfil criado
+// Máscara de telefone brasileiro 
+// Suporta celular (11 dígitos): (00) 00000-0000
+// e fixo (10 dígitos):          (00) 0000-0000
+function mascaraTelefone(valor) {
+  // Remove tudo que não for dígito
+  const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+  if (numeros.length <= 2)  return `(${numeros}`;
+  if (numeros.length <= 6)  return `(${numeros.slice(0,2)}) ${numeros.slice(2)}`;
+  if (numeros.length <= 10) return `(${numeros.slice(0,2)}) ${numeros.slice(2,6)}-${numeros.slice(6)}`;
+  // 11 dígitos → celular
+  return `(${numeros.slice(0,2)}) ${numeros.slice(2,7)}-${numeros.slice(7)}`;
+}
+
+// Função principal da página de cadastro de pessoas, que também exibe o perfil recém-criado e impede novos cadastros enquanto houver uma sessão ativa.
 function Pessoas() {
+  const navigate = useNavigate();
+
   const [perfil,     setPerfil]     = useState(null);
   const [carregando, setCarregando] = useState(false);
   const [erro,       setErro]       = useState("");
+  const [telefone,   setTelefone]   = useState("");
 
-  // Função assíncrona para lidar com o processo de cadastro de uma nova pessoa, que inclui a criação do perfil e o login automático para obter o token JWT, além de gerenciar os estados de carregamento e mensagens de erro
+  // Verifica se já existe um usuário salvo na sessão ao montar o componente, para evitar que um usuário logado acesse a página de cadastro.
+  const [jaLogado, setJaLogado] = useState(false);
+
+  useEffect(() => {
+    const usuarioAtual = getUsuarioSalvo();
+    if (usuarioAtual) {
+      setJaLogado(true);
+    }
+  }, []);
+
+  // Handler da máscara de telefone que formata o número conforme o usuário digita, permitindo apenas dígitos e aplicando a formatação brasileira de telefone. O valor formatado é armazenado no estado `telefone`, que é um campo controlado do input de telefone no formulário de cadastro.
+  function handleTelefone(e) {
+    setTelefone(mascaraTelefone(e.target.value));
+  }
+
+  // Cadastro + login automático para persistir sessão após criar o perfil. O backend já valida se o e-mail é único, então aqui apenas exibimos a mensagem de erro retornada pela API em caso de falha no cadastro. Se o cadastro for bem-sucedido, uma requisição de login é feita automaticamente para obter o token JWT e salvar a sessão, permitindo que o usuário seja redirecionado para a página de conhecimentos sem precisar fazer login manualmente após se cadastrar.
   async function cadastrarPessoa(formData) {
     setErro("");
     setCarregando(true);
 
-    // Extrai os dados do formulário usando FormData, garantindo que os campos opcionais sejam tratados corretamente (definidos como undefined se estiverem vazios)
     const nome      = formData.get("nome");
     const email     = formData.get("email");
     const senha     = formData.get("senha");
-    const telefone  = formData.get("telefone") || undefined;
+    // Remove máscara antes de enviar ao backend
+    const telefoneLimpo = telefone.replace(/\D/g, "") || undefined;
     const descricao = formData.get("descricao") || undefined;
 
     try {
-      // 1. Registra via /auth/registro (bcrypt + validação de duplicatas) 
+      // 1. Registro
       const resRegistro = await fetch("http://localhost:3000/auth/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nome, email, senha, telefone, descricao }),
+        body: JSON.stringify({ nome, email, senha, telefone: telefoneLimpo || undefined, descricao }),
       });
 
       const dadosRegistro = await resRegistro.json();
@@ -83,7 +122,7 @@ function Pessoas() {
         return;
       }
 
-      // 2. Login automático para obter o JWT 
+      // 2. Login automático para obter o JWT
       const resLogin = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -97,19 +136,18 @@ function Pessoas() {
         return;
       }
 
-      // 3. Persiste usuário + JWT via utilitário centralizado 
+      // 3. Persiste sessão
       const usuarioSessao = {
         id:        dadosLogin.pessoa.id,
         nome:      dadosLogin.pessoa.nome,
         email:     dadosLogin.pessoa.email,
-        telefone:  telefone  || null,
+        telefone:  telefone || null,
         descricao: descricao || null,
       };
 
       salvarSessao(usuarioSessao, dadosLogin.token);
       setPerfil(usuarioSessao);
 
-    // Gerencia erros de conexão ou outros erros inesperados durante o processo de cadastro e login
     } catch {
       setErro("Erro de conexão. Verifique se o servidor está rodando.");
     } finally {
@@ -117,10 +155,62 @@ function Pessoas() {
     }
   }
 
-  // Gera as iniciais do usuário para exibir no avatar do perfil, pegando as primeiras letras dos dois primeiros nomes e convertendo para maiúsculas  
   const iniciais = perfil
     ? perfil.nome.split(" ").slice(0, 2).map((p) => p[0].toUpperCase()).join("")
     : "";
+
+  // Bloco de acesso negado para usuário já logado - Faz a verificação de sessão ativa e exibe uma mensagem informando que o usuário já possui uma conta ativa, impedindo o acesso ao formulário de cadastro. Oferece opções para navegar até a página de conhecimentos ou fazer logout para trocar de conta, garantindo que um usuário logado não possa criar múltiplos cadastros sem antes sair da sessão atual.
+  if (jaLogado && !perfil) {
+    const usuarioAtual = getUsuarioSalvo();
+    const primeiroNome = usuarioAtual?.nome?.split(" ")[0] ?? "usuário";
+    return (
+      <div className="cadastro-page">
+        <div className="landing-grid" />
+        <div className="orb orb-1" />
+        <div className="orb orb-2" />
+        <div className="cadastro-card">
+          <div className="cadastro-card__stripe" />
+          <div className="cadastro-card__body">
+            <div className="cadastro-badge" style={{ background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.3)", color: "#fbbf24" }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              Sessão ativa
+            </div>
+            <h1 className="cadastro-title">
+              Olá, <span>{primeiroNome}!</span>
+            </h1>
+            <p className="cadastro-subtitle" style={{ marginBottom: "8px" }}>
+              Você já possui uma conta ativa nesta sessão. Não é possível criar um novo cadastro enquanto estiver logado.
+            </p>
+            <p className="cadastro-subtitle">
+              Para criar uma nova conta, primeiro faça o logout pela barra de navegação.
+            </p>
+            <div style={{ height: "1px", background: "var(--border)", margin: "20px 0" }} />
+            <button className="cadastro-btn" onClick={() => navigate("/conhecimentos")}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+              Ir para Conhecimentos
+            </button>
+            <p className="cadastro-login-hint" style={{ marginTop: "16px" }}>
+              Quer trocar de conta?{" "}
+              <a
+                href="#sair"
+                onClick={(e) => {
+                  e.preventDefault();
+                  limparSessao();
+                  setJaLogado(false);
+                }}
+              >
+                Sair da conta atual
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="cadastro-page">
@@ -160,10 +250,18 @@ function Pessoas() {
             </div>
 
             <button
+              className="cadastro-btn"
+              onClick={() => navigate("/conhecimentos")}
+            >
+              <IcArrow /> Explorar conhecimentos
+            </button>
+
+            <button
               className="perfil-novo-btn"
               onClick={() => {
                 limparSessao();
                 setPerfil(null);
+                setTelefone("");
               }}
             >
               <IcUser /> Cadastrar outro usuário
@@ -172,7 +270,7 @@ function Pessoas() {
         </div>
 
       ) : (
-      /* ── Formulário de Cadastro ── */
+        /* ── Formulário de Cadastro ── */
         <div className="cadastro-card">
           <div className="cadastro-card__stripe" />
           <div className="cadastro-card__body">
@@ -234,12 +332,17 @@ function Pessoas() {
                   <IcPhone /> Telefone
                   <span className="cadastro-opcional">(opcional)</span>
                 </label>
+                {/* Campo controlado para a máscara — não usa name pois o valor
+                    já é lido direto do estado `telefone` em cadastrarPessoa */}
                 <input
                   className="cadastro-input"
-                  name="telefone"
                   type="tel"
-                  placeholder="(00) 90000-0000"
+                  placeholder="(00) 00000-0000"
+                  value={telefone}
+                  onChange={handleTelefone}
+                  maxLength={15}
                   disabled={carregando}
+                  inputMode="numeric"
                 />
               </div>
 
@@ -261,7 +364,13 @@ function Pessoas() {
                 {carregando ? <span className="cadastro-spinner" /> : <IcUser />}
                 {carregando ? "Criando perfil…" : "Criar perfil"}
               </button>
+
             </form>
+
+            <p className="cadastro-login-hint">
+              Já tem conta?{" "}
+              <a href="/login">Entrar</a>
+            </p>
           </div>
         </div>
       )}
