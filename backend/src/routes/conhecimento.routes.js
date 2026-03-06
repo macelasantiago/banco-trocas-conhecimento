@@ -78,10 +78,15 @@ router.get("/conhecimentos/:id", async (req, res) => {
     if (isNaN(id)) {
       return res.status(400).json({ erro: "ID inválido. Deve ser um número." });
     }
-
+    
+    // Inclui dados básicos do ofertante para exibir na página de detalhes
     const conhecimento = await prisma.conhecimento.findUnique({
       where: { id },
-      include: { pessoa: true }
+      include: {
+        pessoa: {
+          select: { id: true, nome: true, email: true, telefone: true, descricao: true }
+        }
+      }
     });
 
     if (!conhecimento) {
