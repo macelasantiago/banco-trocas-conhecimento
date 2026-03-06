@@ -27,7 +27,7 @@ const team = [
     color:     "#a855f7",
     tags:      [{ icon: <IcShield />, label: "JWT" }, { icon: <IcStar />, label: "Landing Page" }],
     backDesc:  "Implementou autenticação JWT com controle de permissões por recurso, middlewares globais de tratamento de erros, padronização de respostas e busca full-text na API.",
-    frontDesc: "Desenvolveu a Landing Page com scroll reveal, efeito typewriter, números animados e design responsivo completo.",
+    frontDesc: "Desenvolveu a Landing Page e o designer completo do Projeto com scroll reveal, efeito typewriter e números animados. Implementou o sistema de login com JWT, corrigiu bugs críticos de cadastro, sessão de usuário e renderização dos modais de conhecimento.",
     github:    "https://github.com/BeatrizS97",
     linkedin:  "https://www.linkedin.com/in/beatrizsilvasantos-dev/",
     highlight: "Implementou auth JWT e finalizou a integração da API",
@@ -39,10 +39,8 @@ const team = [
     color:     "#7c3aed",
     tags:      [{ icon: <IcServer />, label: "REST API" }, { icon: <IcCode />, label: "Listagem" }],
     backDesc:  "Desenvolveu o CRUD completo de pessoas (POST, GET, GET/:id, PUT/:id, DELETE/:id) com validações de entrada e tratamento de erros padronizado.",
-    frontDesc: "Criou a página de listagem de conhecimentos consumindo GET /conhecimentos, com cards exibindo título, categoria, nível e ofertante.",
     github:    "https://github.com/vitorsantabi",
-    linkedin:  "https://linkedin.com/in/",
-    highlight: "CRUD de pessoas do back ao front, do zero",
+    highlight: "Backend do CRUD de pessoas",
   },
   {
     name:      "Patrick Silva",
@@ -65,7 +63,6 @@ const team = [
     backDesc:  "Implementou filtros combinados em GET /conhecimentos por categoria e nível com busca case-insensitive, utilizando queries dinâmicas no Prisma.",
     frontDesc: "Criou o formulário de cadastro de conhecimento com operações de edição (PUT) e exclusão (DELETE), com atualização reativa da listagem.",
     github:    "https://github.com/Antoniofragajunior",
-    linkedin:  "https://linkedin.com/in/",
     highlight: "Filtros inteligentes e CRUD completo no front",
   },
 ];
