@@ -47,6 +47,9 @@
 .conh-btn-novo {
   flex-shrink: 0;
   white-space: nowrap;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 /* ── Filtros ─────────────────────────────────────────────────── */
@@ -92,6 +95,24 @@
 
 .conh-filtros__busca input::placeholder {
   color: var(--text-muted);
+}
+
+/* Botão limpar busca (X dentro do campo) */
+.conh-filtros__clear-busca {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.conh-filtros__clear-busca:hover {
+  opacity: 1;
 }
 
 .conh-filtros__selects {
@@ -187,6 +208,10 @@
   border-width: 2px;
 }
 
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
 /* ── Erro ────────────────────────────────────────────────────── */
 .conh-erro {
   display: flex;
@@ -263,9 +288,10 @@
   box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
 }
 
-/* Stripe de cor no topo do card por nível */
+/* Stripe de cor no topo por nível */
 .conh-card__stripe {
   height: 3px;
+  flex-shrink: 0;
 }
 
 .conh-card__stripe--basico        { background: linear-gradient(90deg, #34d399, #10b981); }
@@ -280,7 +306,7 @@
   gap: 10px;
 }
 
-/* Badges categoria e nível */
+/* Badges */
 .conh-card__badges {
   display: flex;
   gap: 7px;
@@ -337,8 +363,6 @@
   line-height: 1.65;
   margin: 0;
   flex: 1;
-
-  /* Limita a 3 linhas com reticências */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -365,12 +389,13 @@
   font-weight: 500;
 }
 
-/* Botões de ação do card */
 .conh-card__acoes {
   display: flex;
   gap: 6px;
 }
 
+/* Botões de ação no card */
+.conh-btn-detalhe,
 .conh-btn-editar,
 .conh-btn-excluir {
   display: inline-flex;
@@ -384,6 +409,18 @@
   cursor: pointer;
   transition: all 0.2s;
   border: 1px solid;
+}
+
+.conh-btn-detalhe {
+  background: rgba(200, 195, 255, 0.05);
+  border-color: rgba(200, 195, 255, 0.15);
+  color: var(--text-muted);
+}
+
+.conh-btn-detalhe:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #a78bfa;
 }
 
 .conh-btn-editar {
@@ -408,7 +445,7 @@
   border-color: rgba(239, 68, 68, 0.45);
 }
 
-/* ── Overlay do modal ────────────────────────────────────────── */
+/* ── Overlay ─────────────────────────────────────────────────── */
 .conh-overlay {
   position: fixed;
   inset: 0;
@@ -419,7 +456,12 @@
   animation: fadeIn 0.2s ease;
 }
 
-/* ── Modal ───────────────────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal base ──────────────────────────────────────────────── */
 .conh-modal {
   position: fixed;
   top: 50%;
@@ -437,7 +479,6 @@
   max-height: calc(100vh - 48px);
 }
 
-/* Cabeçalho do modal */
 .conh-modal__header {
   display: flex;
   align-items: flex-start;
@@ -498,7 +539,11 @@
   border-color: rgba(139, 92, 246, 0.35);
 }
 
-/* Corpo do modal */
+.conh-modal__close:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .conh-modal__body {
   padding: 22px 24px;
   display: flex;
@@ -507,7 +552,16 @@
   overflow-y: auto;
 }
 
-/* Campos do formulário */
+.conh-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  background: rgba(139, 92, 246, 0.02);
+}
+
+/* ── Campos do formulário ────────────────────────────────────── */
 .conh-field {
   display: flex;
   flex-direction: column;
@@ -551,6 +605,11 @@
   color: var(--text-faint);
 }
 
+.conh-input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .conh-textarea {
   resize: vertical;
   min-height: 100px;
@@ -571,7 +630,7 @@
   color: #f0eeff;
 }
 
-/* Feedback de sucesso/erro */
+/* ── Feedback inline ─────────────────────────────────────────── */
 .conh-feedback {
   display: flex;
   align-items: center;
@@ -594,53 +653,17 @@
   color: #f87171;
 }
 
-/* Rodapé do modal */
-.conh-modal__footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
-  background: rgba(139, 92, 246, 0.02);
-}
-
-
-/* ── Botão Ver Detalhes ──────────────────────────────────────── */
-.conh-btn-detalhe {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: 1px solid rgba(200, 195, 255, 0.15);
-  background: rgba(200, 195, 255, 0.05);
-  color: var(--text-muted);
-}
-
-.conh-btn-detalhe:hover {
-  background: rgba(139, 92, 246, 0.1);
-  border-color: rgba(139, 92, 246, 0.3);
-  color: #a78bfa;
-}
-
 /* ── Modal de Detalhes ───────────────────────────────────────── */
 .conh-modal--detalhe {
-  /* Herda tudo do .conh-modal — só ajustes específicos */
   width: min(520px, calc(100vw - 32px));
 }
 
-/* Stripe colorida no topo do modal de detalhes */
+/* Stripe no topo do modal de detalhe */
 .conh-detalhe__stripe {
   height: 4px;
   flex-shrink: 0;
 }
 
-/* Badges dentro do cabeçalho do detalhe */
 .conh-detalhe__badges {
   display: flex;
   gap: 6px;
@@ -648,26 +671,34 @@
   margin-top: 6px;
 }
 
-/* Seção genérica de conteúdo */
 .conh-detalhe__secao {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Descrição completa — sem line-clamp */
+/* Descrição sem truncamento */
 .conh-detalhe__desc {
   font-size: 0.88rem;
   color: var(--text-muted);
   line-height: 1.75;
   margin: 0;
-  white-space: pre-wrap; /* respeita quebras de linha da descrição */
+  white-space: pre-wrap;
 }
 
-/* Divisor entre seções */
 .conh-detalhe__divisor {
   height: 1px;
   background: var(--border);
+}
+
+/* Loading inline no modal de detalhes */
+.conh-detalhe__loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 8px 0;
 }
 
 /* Card de contato */
@@ -681,7 +712,6 @@
   border-radius: var(--radius);
 }
 
-/* Avatar circular com inicial do nome */
 .conh-detalhe__avatar {
   width: 44px;
   height: 44px;
@@ -710,7 +740,6 @@
   color: var(--text);
 }
 
-/* Links de email e telefone */
 .conh-detalhe__contato-linha {
   display: inline-flex;
   align-items: center;
@@ -732,6 +761,7 @@
   font-style: italic;
 }
 
+/* ── Responsivo ──────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .conh-page {
     padding: 32px 16px 64px;
@@ -779,4 +809,40 @@
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CORREÇÕES: modal-enter + grid recarregando silencioso
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Animação própria para modal — NÃO usa animate-fade-up pois
+   translateY sobrescreveria o translate(-50%,-50%) de centralização */
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 18px)) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.conh-modal--enter {
+  animation: modal-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Modal: header e footer fixos, body com scroll */
+.conh-modal__header { flex-shrink: 0; }
+.conh-modal__footer { flex-shrink: 0; }
+.conh-modal__body   { flex: 1; min-height: 0; }
+
+/* max-height com dvh para suporte a mobile moderno */
+.conh-modal { max-height: calc(100dvh - 80px); }
+
+/* Grid em refresh silencioso pós-save */
+.conh-grid--recarregando {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 0.2s;
 }
