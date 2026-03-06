@@ -57,10 +57,7 @@ const IconLogin = () => (
     <line x1="15" y1="12" x2="3" y2="12"/>
   </svg>
 );
-
-/**
- * Ícone personalizado de sessão ativa — pessoa com crachá de verificação.
- */
+ // Ícone personalizado de sessão ativa — pessoa com crachá de verificação.
 const IconUserBadge = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="7" r="3.5"/>
@@ -70,9 +67,12 @@ const IconUserBadge = () => (
   </svg>
 );
 
+// ── Rotas de navegação
+// "Pessoas" foi removido intencionalmente:
+//   - Deslogado: acesso via botão "Cadastrar-se →" no nav (que já leva a /pessoas)
+//   - Logado: não faz sentido exibir cadastro para quem já tem conta
 const navLinks = [
   { to: "/",              label: "Início",        icon: <IconHome /> },
-  { to: "/pessoas",       label: "Pessoas",       icon: <IconTeam /> },
   { to: "/conhecimentos", label: "Conhecimentos", icon: <IconBook /> },
   { to: "/sobre",         label: "Sobre Nós",     icon: <IconTeam /> },
 ];
@@ -84,19 +84,23 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [usuario,    setUsuario]    = useState(getUsuarioSalvo);
 
+  // Efeito de blur/borda ao rolar
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Fecha menu mobile ao navegar
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
+  // Bloqueia scroll do body quando menu mobile estiver aberto
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  // Sincroniza estado de auth com login/logout feitos em outras páginas
   useEffect(() => {
     const sync = () => setUsuario(getUsuarioSalvo());
     window.addEventListener("authChange", sync);
@@ -122,11 +126,13 @@ function Navbar() {
       <nav className={`nav-root${scrolled ? " scrolled" : ""}`}>
         <div className="nav-inner">
 
+          {/* Logo */}
           <Link to="/" className="nav-logo">
             <div className="nav-logo-icon"><IconBrain /></div>
             <span className="nav-logo-text">Banco de <span>Trocas</span></span>
           </Link>
 
+          {/* Links de navegação — Início, Conhecimentos, Sobre Nós */}
           <ul className="nav-links">
             {navLinks.map(({ to, label, icon }) => (
               <li key={to}>
@@ -137,9 +143,9 @@ function Navbar() {
             ))}
           </ul>
 
-          {/* ── Autenticação ── */}
+          {/* ── Área de autenticação ── */}
           {usuario ? (
-            /* Logado: avatar + nome + sair */
+            // Logado: avatar com iniciais + primeiro nome + botão Sair
             <div className="nav-user">
               <div className="nav-user-avatar-wrap">
                 <div className="nav-user-avatar">{iniciais}</div>
@@ -153,7 +159,7 @@ function Navbar() {
               </button>
             </div>
           ) : (
-            /* Deslogado: Entrar + Cadastrar-se */
+            // Deslogado: Entrar (outline) + Cadastrar-se → (gradiente, leva a /pessoas)
             <div className="nav-auth-btns">
               <Link to="/login" className="nav-login">
                 <IconLogin /> Entrar
@@ -164,6 +170,7 @@ function Navbar() {
             </div>
           )}
 
+          {/* Botão hambúrguer mobile */}
           <button
             className="nav-mobile-btn"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -174,6 +181,7 @@ function Navbar() {
         </div>
       </nav>
 
+      {/* ── Menu mobile ── */}
       {mobileOpen && (
         <>
           <div className="nav-overlay" onClick={() => setMobileOpen(false)} />
@@ -183,7 +191,9 @@ function Navbar() {
                 {icon} {label}
               </Link>
             ))}
+
             <div className="nav-mobile-divider" />
+
             {usuario ? (
               <>
                 <div className="nav-mobile-user-info">
